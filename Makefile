@@ -7,7 +7,12 @@ pipsync:
 
 lint:
 	ruff check . --select I --fix
-	ruff format .	
+	ruff format .
 
-forward-prod-appsmith-db:
-	kubectl port-forward svc/appsmith-pg-rw 15432:5432 --namespace=appsmith;
+build:
+	docker build -t malayh/pg_dumper .
+
+release:
+	@read -p "Enter Tag:" tag; \
+	docker tag malayh/pg_dumper:latest malayh/pg_dumper:$$tag; \
+	docker push malayh/pg_dumper:$$tag;

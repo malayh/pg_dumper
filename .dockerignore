@@ -1,0 +1,17 @@
+# Ignore Python virtual environment
+venv/
+*.venv/
+
+# Ignore backup files
+.backups/
+
+# Ignore configuration files
+.ruff/
+.vscode/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore Docker Compose file if not needed in the image
+docker-compose.yml

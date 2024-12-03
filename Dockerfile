@@ -1,13 +1,17 @@
-# sudo apt install -y postgresql-common
+FROM python:3.10.15-slim-bookworm
 
-# sudo apt install curl ca-certificates
-# sudo install -d /usr/share/postgresql-common/pgdg
-# sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+# Install PostgreSQL client
+RUN apt update;\
+    apt install -y postgresql-common; \
+    YES=y /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh; \
+    apt -y install postgresql-client-17;
 
-# # Create the repository configuration file:
-# sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
-# # Update the package lists:
-# sudo apt update
+# Install Python dependencies
+RUN mkdir /pg_dumper
+WORKDIR /pg_dumper
+COPY . . 
+RUN pip install -r requirements.txt
 
-# sudo apt -y install postgresql-client-17
+ENTRYPOINT ["python", "/pg_dumper/main.py"]
+CMD ["--config /pg_dumper/config.yml"]
