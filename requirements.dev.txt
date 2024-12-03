@@ -10,6 +10,7 @@ importlib-metadata==8.5.0  # via build
 packaging==24.2           # via build
 pip-tools==7.4.1          # via -r requirements.dev.in
 pyproject-hooks==1.2.0    # via build, pip-tools
+ruff==0.8.1               # via -r requirements.dev.in
 tomli==2.1.0              # via build, pip-tools
 wheel==0.45.1             # via pip-tools
 zipp==3.21.0              # via importlib-metadata

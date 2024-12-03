@@ -1,16 +1,20 @@
-import os
-import logging
-import boto3
-import subprocess
 import datetime
+import logging
+import os
 import pathlib
-from pg_dumper.config import Config, Target
+import subprocess
+
+import boto3
 from tenacity import retry, stop_after_attempt, wait_fixed
+
+from pg_dumper.config import Config, Target
 
 logger = logging.getLogger("pg_dumper")
 
+
 def make_backup_filename(target: Target):
     return f"{target.name}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.bkp"
+
 
 def take_pg_dump(target: Target, config: Config):
     work_dir = pathlib.Path(config.workingDir).joinpath(target.name)
@@ -19,27 +23,28 @@ def take_pg_dump(target: Target, config: Config):
     filename = make_backup_filename(target)
     filepath = work_dir.joinpath(filename)
 
+    # fmt: off
     command = [
-        'pg_dump',
-        '-Fc',
-        '-d', target.database,
-        '-h', target.host,
-        '-p', str(target.port),
-        '-U', target.username,
-        '-f', str(filepath),
+        "pg_dump", "-Fc",
+        "-d", target.database,
+        "-h", target.host,
+        "-p", str(target.port),
+        "-U", target.username,
+        "-f", str(filepath),
     ]
-    
+    # fmt: on
+
     env = os.environ.copy()
     env["PGPASSWORD"] = target.password
     logger.info(f"Running command: {' '.join(command)}")
 
-    result = subprocess.run(command, env=env,capture_output=True, text=True)
+    result = subprocess.run(command, env=env, capture_output=True, text=True)
     if result.returncode == 0:
         logger.info(f"Dump successful. {result.stdout}")
     else:
         logger.error(result.stderr)
         raise ValueError("Error running pg_dump")
-    
+
     return filepath
 
 
@@ -52,10 +57,10 @@ def upload_file_to_s3(filepath: str, target: Target, config: Config):
     )
     s3 = session.client("s3", endpoint_url=storage.endpoint)
     filename = os.path.basename(filepath)
-    
+
     logger.info(f"Uploading {filename} to {storage.bucket}/{target.name}/{filename}")
     s3.upload_file(filepath, storage.bucket, f"{target.name}/{filename}")
-    logger.info(f"Upload successful")
+    logger.info("Upload successful")
 
 
 def run_backup(target: Target, config: Config):

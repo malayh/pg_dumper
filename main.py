@@ -1,14 +1,17 @@
+import argparse
 import logging
 import time
-import argparse
-from pg_dumper.config import Config, Storage
-from pg_dumper.backup import run_backup
 
+from apscheduler.executors.pool import ProcessPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.executors.pool import ProcessPoolExecutor
 
-logging.basicConfig(format="[%(levelname)s]:%(name)s:%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO)
+from pg_dumper.backup import run_backup
+from pg_dumper.config import Config
+
+logging.basicConfig(
+    format="[%(levelname)s]:%(name)s:%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO
+)
 logger = logging.getLogger("pg_dumper")
 
 
@@ -17,12 +20,9 @@ def run_scheduler(config: Config):
     # TODO: Remove old backups from S3. Keep only the latest 5 backups, or backups from the last 7 days
     logger.info("Starting scheduler")
     executors = {
-        'default': ProcessPoolExecutor(2),
+        "default": ProcessPoolExecutor(2),
     }
-    job_defaults = {
-        'coalesce': False,
-        'max_instances': 3
-    }
+    job_defaults = {"coalesce": False, "max_instances": 3}
 
     scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
 
@@ -30,8 +30,8 @@ def run_scheduler(config: Config):
         logger.info(f"Scheduling job for {target.name} with schedule {target.schedule}")
         trigger = CronTrigger.from_crontab(target.schedule)
         scheduler.add_job(
-            run_backup, 
-            trigger=trigger, 
+            run_backup,
+            trigger=trigger,
             args=[target, config],
         )
 
@@ -43,16 +43,17 @@ def run_scheduler(config: Config):
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
         logger.info("Scheduler stopped")
-            
+
 
 def main():
     parser = argparse.ArgumentParser(description="Backup PostgreSQL database to a S3")
-    parser.add_argument("--config", type=str, help="Path to the config file",required=True)
+    parser.add_argument("--config", type=str, help="Path to the config file", required=True)
 
     args = parser.parse_args()
     config = Config.from_config_file(args.config)
     logger.setLevel(logging.getLevelName(config.logLevel))
     run_scheduler(config)
+
 
 if __name__ == "__main__":
     main()

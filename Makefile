@@ -5,6 +5,9 @@ pipcompile:
 pipsync:
 	pip-sync requirements.dev.txt requirements.txt
 
+lint:
+	ruff check . --select I --fix
+	ruff format .	
 
 forward-prod-appsmith-db:
 	kubectl port-forward svc/appsmith-pg-rw 15432:5432 --namespace=appsmith;
