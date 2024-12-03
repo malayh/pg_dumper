@@ -9,6 +9,18 @@ targets:
     database: db
     schedule: "*/1 * * * *" # every 2 minutes
     storage: pg_backup_prod
+    expireAfterDays: 7
+    minRetention: 3
+  - name: some_other_db
+    host: localhost
+    port: 15432
+    username: storagedb
+    password: IEZNQHSWfigx6jbzQ3D
+    database: db
+    schedule: "*/1 * * * *" # every 2 minutes
+    storage: pg_backup_prod
+    expireAfterDays: 7
+    minRetention: 1
 storages:
   - name: pg_backup_prod
     endpoint: http://localhost:19000

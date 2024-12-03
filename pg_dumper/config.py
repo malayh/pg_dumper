@@ -25,6 +25,8 @@ class Target(BaseModel):
     database: str
     schedule: str
     storage: str
+    expireAfterDays: int
+    minRetention: int
 
 
 class Config(BaseModel):

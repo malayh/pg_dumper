@@ -6,7 +6,7 @@ from apscheduler.executors.pool import ProcessPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from pg_dumper.backup import run_backup
+from pg_dumper.backup import run_backup, run_cleanup
 from pg_dumper.config import Config
 
 logging.basicConfig(
@@ -16,8 +16,6 @@ logger = logging.getLogger("pg_dumper")
 
 
 def run_scheduler(config: Config):
-    # TODO: Add a cleanp up job to remove old backups from working directory if exists
-    # TODO: Remove old backups from S3. Keep only the latest 5 backups, or backups from the last 7 days
     logger.info("Starting scheduler")
     executors = {
         "default": ProcessPoolExecutor(2),
@@ -26,6 +24,11 @@ def run_scheduler(config: Config):
 
     scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
 
+    scheduler.add_job(
+        run_cleanup,
+        trigger=CronTrigger.from_crontab("0 * * * *"),
+        args=[config],
+    )
     for target in config.targets:
         logger.info(f"Scheduling job for {target.name} with schedule {target.schedule}")
         trigger = CronTrigger.from_crontab(target.schedule)
