@@ -1,0 +1,15 @@
+volumes:
+  minio_data:
+
+services:
+  s3:
+    image: minio/minio:latest
+    volumes:
+      - minio_data:/data
+    ports:
+      - 19000:9000
+      - 19001:9001
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    command: server /data --console-address ":9001"
