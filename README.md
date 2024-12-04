@@ -9,11 +9,13 @@ docker run malayh/pg_dumper:1.0.0 -d --name pg_dumper \
     -v ./config.yaml:/pg_dumper/config.yaml \
 ```
 - See [Configuration](#Configuration) for details on the configuration file
-- See [docker-compose.yml](docker-compose.yml) for an example of how to run the tool with docker-compose
+- See [docker-compose.yaml](docker-compose.yaml) for an example of how to run the tool with docker-compose
 
 # Configuration
 
 ```yaml
+# Mount a volume to /pg_dumper/backups to store the backups. 
+# This must be able to accommodate the size of the backups you are taking.
 workingDir: /pg_dumper/backups
 logLevel: DEBUG
 targets:
