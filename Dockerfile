@@ -14,4 +14,4 @@ COPY . .
 RUN pip install -r requirements.txt
 
 ENTRYPOINT ["python", "/pg_dumper/main.py"]
-CMD ["--config /pg_dumper/config.yml"]
+CMD ["--config","/pg_dumper/config.yaml"]

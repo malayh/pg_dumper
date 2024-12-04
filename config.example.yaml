@@ -1,0 +1,19 @@
+workingDir: /pg_dumper/backups
+logLevel: DEBUG
+targets:
+  - name: prod_appsmith
+    host: pg
+    port: 5432
+    username: postgres
+    password: password
+    database: db
+    schedule: "*/1 * * * *" # every minute
+    storage: pg_backup_prod
+    expireAfterDays: 7
+    minRetention: 3
+storages:
+  - name: pg_backup_prod # name is referenced in the target
+    endpoint: http://s3:9000
+    accessKey: R5UNdUZCCfzXYAnQF50w
+    secretKey: OEvK1F9B7GY29bHJJPtzRRKmHPruZ9Y5h0ULWf3n
+    bucket: pg-backup-prod

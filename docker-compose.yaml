@@ -1,5 +1,10 @@
+networks:
+  pg_dumper:
+
 volumes:
   minio_data:
+  pg_data:
+  pg_dumper_working_dir:
 
 services:
   s3:
@@ -12,4 +17,27 @@ services:
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=password
+    networks:
+      - pg_dumper
     command: server /data --console-address ":9001"
+
+  pg:
+    networks:
+      - pg_dumper
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+    ports:
+      - 15432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+
+  pg_dumper:
+    image: malayh/pg_dumper:1.0.0
+    networks:
+      - pg_dumper
+    volumes:
+      - pg_dumper_working_dir:/pg_dumper/backups
+      - ./config.example.yaml:/pg_dumper/config.yaml
