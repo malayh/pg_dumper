@@ -14,6 +14,7 @@ docker run malayh/pg_dumper:1.0.0 -d --name pg_dumper \
 # Configuration
 
 ```yaml
+# Temporary directory to store the backups before uploading to the storage
 # Mount a volume to /pg_dumper/backups to store the backups. 
 # This must be able to accommodate the size of the backups you are taking.
 workingDir: /pg_dumper/backups
