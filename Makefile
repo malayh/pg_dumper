@@ -9,6 +9,9 @@ lint:
 	ruff check . --select I --fix
 	ruff format .
 
+test:
+	pytest tests/
+
 build:
 	docker build -t malayh/pg_dumper .
 
