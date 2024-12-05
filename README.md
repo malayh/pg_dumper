@@ -1,6 +1,8 @@
 # pg_dumper
 Tool for scheduling PostgreSQL backups to S3-compatible storage
 
+![Tests](https://github.com/malayh/pg_dumper/actions/workflows/tests.yaml/badge.svg)
+
 # Usage
 
 ```bash

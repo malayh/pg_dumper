@@ -1,5 +1,5 @@
 # .github/workflows/python-tests.yml
-name: Python Tests
+name: Tests
 
 on:
   push:
