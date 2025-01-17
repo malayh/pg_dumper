@@ -12,6 +12,7 @@ docker run malayh/pg_dumper:1.0.0 -d --name pg_dumper \
 ```
 - See [Configuration](#Configuration) for details on the configuration file
 - See [docker-compose.yaml](docker-compose.yaml) for an example of how to run the tool with docker-compose
+- To restore backups taken by this tool use `pg_restore -U <username> -h <host>  -p <port> -d <db name> --clean --if-exists <backup file>`
 
 # Configuration
 
