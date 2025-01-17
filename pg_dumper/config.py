@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 import boto3
 import yaml
@@ -10,7 +11,7 @@ logger = logging.getLogger("pg_dumper")
 
 class Storage(BaseModel):
     name: str
-    endpoint: str
+    endpoint: Optional[str] = None
     accessKey: str
     secretKey: str
     bucket: str
